@@ -1,0 +1,39 @@
+doctype html
+- function toRad(a) { return a * Math.PI / 180; }
+- function getPoint(d,a){ var r = toRad(a); return [Math.cos(r)*d, Math.sin(r)*d];}
+- function getHex(t, d) { return t.map(e => getPoint(d, e));}
+- function getPath(t) { return getHex(t, 50).map(x => "L"+x[0]+" "+x[1]);}
+- var ih = [90, 156, 180]
+- var c1 = [-30, -90, -150, 150, 90, 30]
+- var c2 = [-60, -120, 180, 120, 60]
+- var pathhex = "M50 0 "+getPath(c2).join(" ")+" Z"
+- var hexes = [c1,[0].concat(c2),c1].flatMap((x,i) => getHex(x, ih[i]))
+
+// TODO: insert ids
+
+html
+  head
+    title hexflower
+  body
+    .hex
+      svg(width="460px",height="460px")
+        g(transform="translate(230,230)")
+          path(d=pathhex)
+        for pos in hexes
+          g(transform="translate("+(230+pos[0])+","+(230+pos[1])+")")
+            path(d=pathhex)
+    .menu
+      .left
+        label(for="safe-moves") Safe moves:
+        br
+        input#safe-move(type="number",value="0")
+      .center
+        input#pre-v5(type="radio",name="method",checked)
+        label(for="pre-v5") method pre-v5
+        br
+        input#post-v5(type="radio",name="method")
+        label(for="post-v5") method post-v5
+      .right
+        label(for="risk-moves") Risk moves:
+        br
+        input#risk-moves(type="number",value="0",onclick="")
