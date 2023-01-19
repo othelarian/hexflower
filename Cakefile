@@ -26,10 +26,6 @@ rollLive = (opts = {}) =>
   transform: (code, id) ->
     if extname(id) != '.ls' then return null
     out = livescript.compile code, opts
-    #
-    console.log "out: #{out}"
-    console.log typeof out
-    #
     code: out
 
 # COMMON FUNS #########################

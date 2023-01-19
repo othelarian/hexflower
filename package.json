@@ -18,7 +18,6 @@
   "devDependencies": {
     "bach": "^1.2.0",
     "chokidar": "^3.5.3",
-    "coffeescript": "^2.7.0",
     "connect": "^3.7.0",
     "fs-extra": "10.1.0",
     "livescript": "^1.6.0",

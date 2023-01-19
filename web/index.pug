@@ -2,38 +2,55 @@ doctype html
 - function toRad(a) { return a * Math.PI / 180; }
 - function getPoint(d,a){ var r = toRad(a); return [Math.cos(r)*d, Math.sin(r)*d];}
 - function getHex(t, d) { return t.map(e => getPoint(d, e));}
-- function getPath(t) { return getHex(t, 50).map(x => "L"+x[0]+" "+x[1]);}
-- var ih = [90, 156, 180]
+- function getBase(s) { return getHex([60*s, 120*s], 47).map(x => "L"+x[0]+" "+x[1]); }
+- function getContainer(t) { return getHex(t, 50).map(x => "L"+x[0]+" "+x[1]);}
+- var ih = [[90,"c1"], [156,"c2"], [180,"c3"]]
 - var c1 = [-30, -90, -150, 150, 90, 30]
 - var c2 = [-60, -120, 180, 120, 60]
-- var pathhex = "M50 0 "+getPath(c2).join(" ")+" Z"
-- var hexes = [c1,[0].concat(c2),c1].flatMap((x,i) => getHex(x, ih[i]))
-
-// TODO: insert ids
-
-html
+- var pathhex = "M50 0 "+getContainer(c2).join(" ")+" Z"
+- var uppath = "M47 0 "+getBase(-1).join(" ")+" L-47 0 Z"
+- var dnpath = "M47 0 "+getBase(1).join(" ")+" L-47 0 Z"
+- var hexes = [c1,[0].concat(c2),c1].flatMap((x,i) => getHex(x, ih[i][0]).map((x) => [x, ih[i][1]]))
+html(lang='en')
   head
     title hexflower
-  body
-    .hex
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width,initial-scale=1')
+    link(rel='stylesheet', href='style.css')
+    script(type='text/javascript', src='app.js')
+  body(onload='init()')
+    .hexes
       svg(width="460px",height="460px")
-        g(transform="translate(230,230)")
-          path(d=pathhex)
-        for pos in hexes
-          g(transform="translate("+(230+pos[0])+","+(230+pos[1])+")")
-            path(d=pathhex)
+        g#c0(transform="translate(230,230)")
+          path.hex(d=pathhex)
+          path.base.up(d=uppath)
+          rect(x="-27",y="-33",width="54",height="14")
+          text.up(x="-25",y="-21") --
+          path.base.dn(d=dnpath)
+          rect(x="-27",y="20",width="54",height="14")
+          text.dn(x="-25",y="32") --
+        each pos,i in hexes
+          - var gi = i % 6
+          g(id=pos[1]+"-"+gi,transform="translate("+(230+pos[0][0])+","+(230+pos[0][1])+")")
+            path.hex(d=pathhex)
+            path.base.up(d=uppath)
+            rect(x="-27",y="-33",width="54",height="14")
+            text.up(x="-25",y="-21") --
+            path.base.dn(d=dnpath)
+            rect(x="-27",y="20",width="54",height="14")
+            text.dn(x="-25",y="32") --
     .menu
       .left
         label(for="safe-moves") Safe moves:
         br
-        input#safe-move(type="number",value="0")
+        input#safe-moves(type="number",value="0")
       .center
-        input#pre-v5(type="radio",name="method",checked)
+        input#pre-v5(type="radio",name="method",onclick='changeMethod("pre")',checked)
         label(for="pre-v5") method pre-v5
         br
-        input#post-v5(type="radio",name="method")
+        input#post-v5(type="radio",name="method",onclick='changeMethod("post")')
         label(for="post-v5") method post-v5
       .right
         label(for="risk-moves") Risk moves:
         br
-        input#risk-moves(type="number",value="0",onclick="")
+        input#risk-moves(type="number",value="0")
