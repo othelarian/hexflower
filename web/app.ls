@@ -27,26 +27,26 @@ store =
     'c1-5': v: no, m: ['c2-0' 'c1-0' 'c0' 'c1-4' 'c2-5' 'c3-5']
     'c2-0': v: no, m: ['c2-4' 'c3-0' 'c1-0' 'c1-5' 'c3-5' 'c2-2']
     'c2-1':
-      v: yes, v4: no
+      v: yes, v4: no, u: 1
       m: ['c2-3' 'c2-5' 'c3-1' 'c1-1' 'c1-0' 'c3-0']
     'c2-2':
-      v: yes, v4: no
+      v: yes, v4: no, u: 1
       m: ['c3-1' 'c2-4' 'c2-0' 'c3-2' 'c1-2' 'c1-1']
     'c2-3': v: no, m: ['c1-2' 'c3-2' 'c2-5' 'c2-1' 'c3-3' 'c1-3']
     'c2-4':
-      v: yes, v4: no
+      v: yes, v4: no, u: 4
       m: ['c1-4' 'c1-3' 'c3-3' 'c2-0' 'c2-2' 'c3-4']
     'c2-5':
-      v: yes, v4: no
+      v: yes, v4: no, u: 4
       m: ['c3-5' 'c1-5' 'c1-4' 'c3-4' 'c2-1' 'c2-3']
     'c3-0': v: no, m: ['c3-3' 'c3-5' 'c2-1' 'c1-0' 'c2-0' 'c3-1']
     'c3-1':
-      v: yes, v4: yes
+      v: yes, v4: yes, u: 1
       m: ['c3-2' 'c3-4' 'c3-0' 'c2-2' 'c1-1' 'c2-1']
     'c3-2': v: no, m: ['c2-2' 'c3-3' 'c2-5' 'c3-1' 'c2-3' 'c1-2']
     'c3-3': v: no, m: ['c1-3' 'c2-3' 'c3-4' 'c3-0' 'c3-2' 'c2-4']
     'c3-4':
-      v: yes, v4: yes
+      v: yes, v4: yes, u: 4
       m: ['c2-5' 'c1-4' 'c2-4' 'c3-5' 'c3-1' 'c3-3']
     'c3-5': v: no, m: ['c3-4' 'c2-0' 'c1-5' 'c2-5' 'c3-0' 'c3-2']
   probs:
@@ -77,15 +77,15 @@ calculate = !->
       else
         move-value dom
         for c,v of store.flower when store.flower[c][dom].old isnt 0
-          m = get-move v
+          m = get-move v, strt
           apply-hex v, dom, m
-  curate-v = (m,r) -> [(if i is 1 then "c1-#r" else x) for x,i in m]
-  get-move = (v) ->
+  curate-v = (u,m,r) -> [(if i is u then r else x) for x,i in m]
+  get-move = (v,r) ->
     switch store.method
       when 'v3'
-        if v.v then curate-v v.m, 1 else v.m
+        if v.v then curate-v v.u, v.m, r else v.m
       when 'v4'
-        if v.v and v.v4 then curate-v v.m, 1 else v.m
+        if v.v and v.v4 then curate-v v.u, v.m, r else v.m
       when 'v12' then v.m
   update = (dom) ->
     s = if dom is 'risk' then 'up' else 'dn'
