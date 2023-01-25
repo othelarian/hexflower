@@ -39,25 +39,8 @@ html(lang='en')
             path.base.dn(d=dnpath)
             rect(x="-27",y="20",width="54",height="14")
             text.dn(x="-25",y="32") --
-    .menu
-      .left
-        label(for="safe-moves") Safe moves:
-        br
-        input#safe-moves(type="number",value="0")
-        br
-        span (limited to 10)
-      .center
-        input#v3-method(type="radio",name="method",onclick='changeMethod("v3")')
-        label(for="v3-method") v3 method
-        br
-        input#v4-method(type="radio",name="method",onclick='changeMethod("v4")')
-        label(for="v4-method") v4 method
-        br
-        input#v12-method(type="radio",name="method",onclick='changeMethod("v12")', checked)
-        label(for="v12-method") v12 method
-      .right
-        label(for="risk-moves") Risk moves:
-        br
-        input#risk-moves(type="number",value="0")
-        br
-        span (limited to 10)
+      .menu
+        button(onclick='movedn()') -
+        #moves moves:&nbsp;
+          span#moves-val 0
+        button(onclick='moveup()') +
