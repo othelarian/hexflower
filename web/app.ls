@@ -44,21 +44,26 @@ store =
     probs.4+probs.5
 
 calculate = !->
+  down-value = !->
+    for , v of store.flower
+      v.old = v.curr
+      v.curr = 0
   for _, v of store.flower then v <<< {old: 0, curr: 0, acc: 0}
-  store.flower['c1-5'].curr = 1
   max = 0
-  for til store.moves
-    for c, v of store.flower
-      for p, i in store.probs then store.flower[v.m[i]].acc += (v.curr * p)
-    for c, v of store.flower
-      v.old += v.acc
-      v.curr = v.acc
-      v.acc = 0
-      if v.old >= 1 then v.old = 1
-      max = max >? v.old
+  for wc, wv of store.flower
+    for c,v of store.flower when c isnt wc then v <<< {old: 0, curr: 0}
+    store.flower['c1-5'].curr = 1
+    for til store.moves
+      down-value!
+      for c, v of store.flower when c isnt wc and v.old isnt 0
+        for p, i in store.probs
+          if v.m[i] is wc then wv.acc += (v.old * p)
+          else store.flower[v.m[i]].curr += (v.old * p)
+      max = max >? wv.acc
   for c, v of store.flower when c isnt 'c1-5'
-    document.querySelector "##{c} text.dn" .innerHTML = get-percent v.old
-    document.querySelector "##{c} .base.dn" .style.fill = get-color v.old, max
+    max = if max is 0 then 1 else max
+    document.querySelector "##{c} text.dn" .innerHTML = get-percent v.acc
+    document.querySelector "##{c} .base.dn" .style.fill = get-color v.acc, max
 
 get-color = (val, max) ->
   c = (1 - val / max) * 255
